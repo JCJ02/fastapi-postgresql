@@ -1,6 +1,10 @@
 import random, string
+from passlib.context import CryptContext
 
-def generateRandomText(length = 32):
+# INITIALIZE THE PASSWORD CONTEXT TO USE "BCRYPT"
+random_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+def generateRandomText(length = 16):
     """
     GENERATES A RANDOM STRING WITH AT LEAST 1 NUMBER AND 1 SPECIAL CHARACTER.
     """
@@ -18,6 +22,7 @@ def generateRandomText(length = 32):
 
     # SHUFFLE THE RESULT TO MIX THE CHARACTERS
     random.shuffle(result)
-    return ''.join(result)
+    shuffled = ''.join(result)
+    return random_context.hash(shuffled)
 
-print(generateRandomText())
+print("Generated Random Text: " + generateRandomText())
