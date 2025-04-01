@@ -1,7 +1,12 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Depends
+from api.utilities.database_connection import engine, SessionLocal, get_database
+from api.models.user_model import Base
 
-app = FastAPI()
+app = FastAPI(
+    title = "FastAPI with PostgreSQL",
+    description = "API Template"
+)
 
-@app.get("/")
-def root():
-    return { "Hello": "World!" }
+@app.on_event("startup")
+def startup_event():
+    Base.metadata.create_all(bind=engine)
