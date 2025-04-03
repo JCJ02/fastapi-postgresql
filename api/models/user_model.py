@@ -1,8 +1,8 @@
 from sqlalchemy import Column, ForeignKey, Integer, String, DateTime
 from sqlalchemy.sql import func
-from ..utilities.database_connection import Base
+from . import Base
 
-class User(Base):
+class Users(Base):
     __tablename__ = 'users'
 
     id = Column(Integer, primary_key=True, index=True)
@@ -14,7 +14,7 @@ class User(Base):
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     deleted_at = Column(DateTime(timezone=True), nullable=True)
 
-class Account(Base):
+class Accounts(Base):
     __tablename__ = 'accounts'
 
     id = Column(Integer, primary_key=True, index=True)
