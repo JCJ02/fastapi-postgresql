@@ -1,31 +1,30 @@
-from pydantic_settings import BaseSettings
+import os
+from dotenv import load_dotenv
+from string import Template
 
-class Settings(BaseSettings):
-    PORT: int
-    PROJECT_ENV: str
-    
-    # Database Configuration
-    DATABASE_USERNAME: str
-    DATABASE_PASSWORD: str
-    DATABASE_NAME: str
-    DATABASE_HOST: str
-    DATABASE_PORT: str
-    DATABASE_URL: str
-    
-    # JWT Configuration
-    JWT_SECRET_KEY: str
-    JWT_REFRESH_KEY: str
-    JWT_EXPIRES_IN: int
-    JWT_REFRESH_EXPIRES_IN: int
-    
-    # API Configuration
-    API_KEY: str
-    
-    # URLs
-    PORT_FORWARD_URL: str
-    STAGING_URL: str
+# Load environment variables from .env file
+load_dotenv()
 
-    class Config:
-        env_file = ".env"
+def resolve_nested_env(value):
+    return Template(value).substitute(os.environ) if value else value
 
-settings = Settings()
+configuration = {
+    "app": {
+        "port": int(os.getenv("PORT", 8080)),
+        "env": os.getenv("PROJECT_ENV", "development"),
+    },
+    "database": {
+        "url": os.getenv("DATABASE_URL")
+    },
+    "key": {
+        "secretKey": os.getenv("JWT_SECRET_KEY", "default_jwt_secret"),
+        "x_key": os.getenv("API_KEY", "default_api_key"),
+        "refreshKey": os.getenv("JWT_REFRESH_SECRET_KEY", "default_refresh_secret"),
+        "expiresIn": os.getenv("JWT_EXPIRES_IN", "3600"), # Default to 1 hour
+        "refreshExpiresIn": os.getenv("JWT_REFRESH_EXPIRES_IN", "86400"), # Default to 24 hours
+    },
+    "url": {
+        "local": f"http://localhost:{os.getenv('PORT', 8000)}/api/v1",
+        "forward": f"{os.getenv('PORT_FORWARD_URL', '')}/api/v1",
+    },
+}
