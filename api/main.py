@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from api.utilities.app_response import AppResponse
 from api.configurations.configuration import configuration
+from api.routes.v1 import router as api_router
 
 # INITIALIZE FastAPI APP
 app = FastAPI(
@@ -19,8 +20,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# REGISTERED ENDPOINTS
+app.include_router(api_router)
+
 # ROOT ENDPOINT
-@app.get("/")
+@app.get("/", tags=["Root"])
 async def root():   
     return AppResponse.send_successful(
         data = None,
