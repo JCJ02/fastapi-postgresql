@@ -1,4 +1,5 @@
 from sqlalchemy import Column, ForeignKey, Integer, String, DateTime
+from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from . import Base
 
@@ -14,6 +15,8 @@ class Users(Base):
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     deleted_at = Column(DateTime(timezone=True), nullable=True)
 
+    accounts = relationship("Accounts", back_populates="users", uselist=False)
+
 class Accounts(Base):
     __tablename__ = 'accounts'
 
@@ -23,6 +26,8 @@ class Accounts(Base):
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     deleted_at = Column(DateTime(timezone=True), nullable=True)
     user_id = Column(Integer, ForeignKey("users.id"))
+
+    users = relationship("Users", back_populates="accounts")
 
 class Roles(Base):
     __tablename__ = 'roles'
