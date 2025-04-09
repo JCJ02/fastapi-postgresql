@@ -1,18 +1,20 @@
 from fastapi.responses import JSONResponse
+from fastapi.encoders import jsonable_encoder
+from typing import Optional, Union, Dict, List
 from api.configurations.configuration import configuration
 
 class AppResponse:
     @staticmethod
     def send_successful(
             *,
-            data: any,
+            data: Union[Dict, List, None] = None,
             message: str = "",
             code: int = 200,
     ) -> JSONResponse:
         response_content = {
             "status": "success",
             "message": message,
-            "data": data,
+            "data": jsonable_encoder(data),
             "code": code
         }
         return JSONResponse(content=response_content, status_code=code)
@@ -20,7 +22,7 @@ class AppResponse:
     @staticmethod
     def send_error(
             *,
-            data: any,
+            data: Union[Dict, List, None] = None,
             message: str,
             code: int,
     ) -> JSONResponse:
@@ -34,7 +36,7 @@ class AppResponse:
         response_content = {
             "status": "error",
             "message": response_message,
-            "data": data,
+            "data": jsonable_encoder(data),
             "code": code
         }
         return JSONResponse(content=response_content, status_code=code)
