@@ -6,4 +6,4 @@ Base = declarative_base()
 # Import all models to include them in Base.metadata
 # This ensures Alembic autogenerate works across all models
 
-from api.models.user_model import Users, Roles, Accounts
+from api.models.users_model import Users, Roles, Accounts
