@@ -1,6 +1,6 @@
 from api.services.users_service import UsersService
 from api.utilities.app_response import AppResponse
-from api.schemas.user_schema import UserCreate, UserUpdate, UserResponse
+from api.schemas.users_schema import UserCreate, UserUpdate, UserResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 class UsersController:
