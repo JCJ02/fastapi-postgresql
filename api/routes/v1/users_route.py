@@ -10,13 +10,13 @@ users_controller = UsersController()
 
 @router.get("/{user_id}")
 async def get(
-    user_id: int,
-    db_session: AsyncSession = Depends(get_database)
+   user_id: int,
+   db_session: AsyncSession = Depends(get_database)
 ):
-    """
-    GET USER DETAILS API
-    """
-    return await users_controller.get(db_session, user_id)
+   """
+   GET USER DETAILS API
+   """
+   return await users_controller.get(db_session, user_id)
 
 @router.post("/")
 async def create(
