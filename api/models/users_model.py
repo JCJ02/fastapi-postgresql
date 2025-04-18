@@ -28,13 +28,3 @@ class Accounts(Base):
     user_id = Column(Integer, ForeignKey("users.id"))
 
     users = relationship("Users", back_populates="accounts")
-
-class Roles(Base):
-    __tablename__ = 'roles'
-
-    id = Column(Integer, primary_key=True, autoincrement=True, index=True)
-    role = Column(String, index=True)
-    description = Column(String, index=True)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
-    deleted_at = Column(DateTime(timezone=True), nullable=True)
