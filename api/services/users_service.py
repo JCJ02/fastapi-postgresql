@@ -11,9 +11,10 @@ class UsersService:
     # GET USER ID FUNCTION
     async def get(self, db_session: AsyncSession, user_id: int) -> Optional[UserResponse]:
         user = await self.users_repository.get(db_session, user_id)
-        if user:
+        if not user:
+            return None
+        else: 
             return UserResponse.model_validate(user)
-        return None
 
     # CREATE USER FUNCTION
     async def create(self, db_session: AsyncSession, user_data: UserCreate) -> UserResponse:
