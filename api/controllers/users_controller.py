@@ -14,19 +14,19 @@ class UsersController:
             user = await self.users_service.get(db_session, user_id)
             if not user:
                 return AppResponse.send_error(
-                    data=None,
-                    message="User not Found!",
-                    code=404
+                    data = None,
+                    message = "User not Found!",
+                    code = 404
                 )
             return AppResponse.send_successful(
-                data=user.model_dump(),
-                message="User Found!"
+                data = user.model_dump(),
+                message = "User Found!"
             )
         except Exception as error:
             return AppResponse.send_error(
-                data=None,
-                message=str(error),
-                code=500
+                data = None,
+                message = str(error),
+                code = 500
             )
 
     # CREATE USER FUNCTION
@@ -37,7 +37,7 @@ class UsersController:
                 return AppResponse.send_error(
                     data = None,
                     message = "Failed to Create!",
-                    code=404
+                    code = 404
                 )
             else:
                 user_response = UserResponse.model_validate(create)
@@ -61,12 +61,12 @@ class UsersController:
                 return AppResponse.send_error(
                     data = None,
                     message = "Failed to Update!",
-                    code=404
+                    code = 404
                 )
             
             return AppResponse.send_successful(
-                data=update.model_dump(),
-                message="Successfully Updated!"
+                data = update.model_dump(),
+                message = "Successfully Updated!"
             )
         except Exception as error:
             return AppResponse.send_error(
@@ -122,3 +122,25 @@ class UsersController:
                 code=500
             )
     
+    # AUTHENTICATION OR LOGIN FUNCTION
+    async def authenticate(self, db_session: AsyncSession, email_address: str, password: str) -> str:
+        try:
+            authenticated = await self.users_service.authenticate(db_session, email_address, password)
+
+            if not authenticated:
+                return AppResponse.send_error(
+                    data = None,
+                    message = "Invalid Credentials!",
+                    code = 401
+                )
+            return AppResponse.send_successful(
+                data = authenticated.model_dump(),
+                message = "Logged in Successfully!",
+                code = 200
+            )
+        except Exception as error:
+            return AppResponse.send_error(
+                data = None,
+                message = str(error),
+                code = 500
+            )
