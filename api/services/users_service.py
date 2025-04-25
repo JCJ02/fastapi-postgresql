@@ -1,7 +1,9 @@
 from api.repositories.users_repository import UsersRepository
-from api.schemas.users_schema import UserCreate, UserUpdate, UserResponse
+from api.schemas.users_schema import UserCreate, UserUpdate, UserResponse, AuthenticatedResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Optional
+from api.utilities.password_manager import PasswordManager
+from api.utilities.token_manager import TokenManager
 
 class UsersService:
 
@@ -55,4 +57,39 @@ class UsersService:
             return None
         else:
             return user
+        
+    # AUTHENTICATE OR LOGIN FUNCTION
+    async def authenticate(self, db_session: AsyncSession, email_address: str, password: str) -> Optional[AuthenticatedResponse]:
+        user = await self.users_repository.authenticate(db_session, email_address)
+
+        if not user or not user.accounts:
+            return None
+
+        if not PasswordManager.verify_password(password, user.accounts.password):
+            return None
+        
+        access_token = await TokenManager.generate_access_token({
+            "id": user.id, 
+            "firstname": user.firstname,
+            "lastname": user.lastname,
+            "email_address": user.email_address,
+            "role": user.role
+        })
+        refresh_token = await TokenManager.generate_refresh_token({
+            "id": user.id, 
+            "firstname": user.firstname,
+            "lastname": user.lastname,
+            "email_address": user.email_address,
+            "role": user.role
+        })
+
+        user_response = UserResponse.model_validate(user)
+
+        return AuthenticatedResponse(
+            access_token = access_token,
+            refresh_token = refresh_token,
+            user = user_response
+        )
+
+
         
