@@ -16,6 +16,15 @@ class UsersRepository:
         user = result.scalars().first()
         
         return user
+    
+    # VALIDATE EMAIL FUNCTION
+    async def validate_email(self, db_session: AsyncSession, email_address: str) -> Optional[Users]:
+        result = await db_session.execute(
+            select(Users).where(Users.email_address == email_address).where(Users.deleted_at.is_(None))
+        )
+        is_email_exist = result.scalars().first()
+
+        return is_email_exist
 
     # CREATE USER FUNCTION
     async def create(self, db_session: AsyncSession, user_data: UserCreate) -> Users:

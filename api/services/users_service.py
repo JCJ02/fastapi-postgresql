@@ -18,11 +18,16 @@ class UsersService:
 
     # CREATE USER FUNCTION
     async def create(self, db_session: AsyncSession, user_data: UserCreate) -> UserResponse:
-        user = await self.users_repository.create(db_session, user_data)
-        if not user:
+        is_email_exist = await self.users_repository.validate_email(db_session, user_data.email_address)
+
+        if is_email_exist:
             return None
         else:
-            return UserResponse.model_validate(user)
+            user = await self.users_repository.create(db_session, user_data)
+            if not user:
+                return None
+            else:
+                return UserResponse.model_validate(user)
     
     # UPDATE USER FUNCTION
     async def update(self, db_session: AsyncSession, user_id: int, user_data: UserUpdate) -> Optional[UserResponse]:
