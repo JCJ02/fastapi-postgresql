@@ -6,6 +6,7 @@ from api.models.users_model import Users, Accounts
 from api.utilities.password_manager import PasswordManager
 from api.schemas.users_schema import UserCreate, UserUpdate
 from sqlalchemy.sql import func
+from sqlalchemy.orm import selectinload
 
 class UsersRepository:
     # GET USER ID FUNCTION
@@ -127,4 +128,14 @@ class UsersRepository:
         except SQLAlchemyError as error:
             await db_session.rollback()
             raise Exception(f"Database Error: {str(error)}")
+        
+    # AUTHENTICATE OR LOGIN FUNCTION
+    async def authenticate(self, db_session: AsyncSession, email_address: str) -> Optional[Users]:
+        result = await db_session.execute(
+            select(Users)
+            .options(selectinload(Users.accounts))
+            .where(Users.email_address == email_address)
+            .where(Users.deleted_at.is_(None))
+        )
+        return result.scalars().first()
     
