@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from api.controllers.users_controller import UsersController
-from api.schemas.users_schema import UserCreate, UserUpdate
+from api.schemas.users_schema import UserCreate, UserUpdate, UserAuthenticate
 from api.utilities.database_connection import get_database
 
 router = APIRouter()
@@ -61,4 +61,14 @@ async def soft_delete(
     - Soft delete user and their associated account by setting deleted_at timestamp
     """
     return await users_controller.soft_delete(db_session, user_id)
+
+@router.post("/authenticate")
+async def authenticate(
+   user_data: UserAuthenticate,
+   db_session: AsyncSession = Depends(get_database)
+):
+   """
+   AUTHENTICATE OR LOGIN USER ACCOUNT API
+   """
+   return await users_controller.authenticate(db_session, user_data.email_address, user_data.password)
    
