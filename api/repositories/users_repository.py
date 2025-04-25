@@ -3,7 +3,7 @@ from typing import Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import SQLAlchemyError
 from api.models.users_model import Users, Accounts
-from api.utilities.password import PasswordManager
+from api.utilities.password_manager import PasswordManager
 from api.schemas.users_schema import UserCreate, UserUpdate
 from sqlalchemy.sql import func
 
